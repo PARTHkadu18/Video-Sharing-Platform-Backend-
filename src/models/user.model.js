@@ -44,6 +44,12 @@ const userSchema = new Schema(
         },
         refreshToken:{
             type:String
+        },
+        avatar_public_id:{
+            type:String
+        },
+        coverImage_public_id:{
+            type:String
         }
     },{
         timestamps:true
