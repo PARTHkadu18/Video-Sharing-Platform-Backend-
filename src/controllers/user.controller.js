@@ -5,6 +5,7 @@ import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
+import { log } from "console"
 
 const generateAccessAndRefreshTokens = async(userId)=>
     {
@@ -171,7 +172,12 @@ const logoutUser = asyncHandler(async(req,res)=>{
     status(200)
     .clearCookie("accessToken",options)
     .clearCookie("refreshToken",options)
-    .json(new ApiResponse(200,{},"User logged out Successfully"))
+    .json(new ApiResponse(200,
+        {
+            username:req.user.username,
+            email:req.user.email
+        },
+        "User logged out Successfully"))
 })
 
 const refreshAccessToken = asyncHandler(async(req,res)=>{
@@ -185,12 +191,12 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
     try {
         const decodedToken=jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN)
         
-        const user=User.findById(decodedToken._id);
-    
+        const user=await User.findById(decodedToken._id);
+        
         if(!user){
             throw new ApiError(401, "Invalid refresh token");
         }
-        if(incomingRefreshToken != user.refreshToken){
+        if(incomingRefreshToken !== user.refreshToken){
             throw new ApiError("401", "Refresh token is expired")
         }
         const options={
@@ -212,7 +218,7 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        throw new ApiError(401,"Invalid refresh token   ")
+        throw new ApiError(401,"Invaliddd refresh token ")
     }
 })
 
@@ -332,7 +338,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
         {
             $match:{
                 username:username
-            }
+            }   
         },
         {
             $lookup:{
@@ -414,7 +420,7 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
                                 {
                                     $project:{
                                         fullName:1,
-                                        username:avatar,
+                                        username:1,
                                         avatar:1,
 
                                     }
