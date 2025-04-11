@@ -21,4 +21,10 @@ app.use("/api/v1/users",userRouter)
 
 // http://localhost:8000/api/v1/users/registers
 
+import videoRouter from "./routes/video.routes.js"
+import subscriptionRouter from "./routes/subscription.routes.js"
+
+app.use("api/v1/videos",videoRouter)
+app.use("api/v1/subscriptions",subscriptionRouter)
+
 export {app}    
