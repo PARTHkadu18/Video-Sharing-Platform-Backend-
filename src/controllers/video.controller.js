@@ -100,6 +100,7 @@ const publishAVideo = asyncHandler(async(req,res)=>{
         video_public_id:videoCloud.public_id,
         thumbnail_public_id:thumbnaiCloud.public_id,
         duration:videoCloud.duration,
+        owner
     })
     if(!createVideoFile){
         throw new ApiError(500,"Something went wrong while uploading a video");
